@@ -353,18 +353,33 @@ img {
       .boxes {
         display: flex;
         justify-content: center;
+        margin-right: 25px;
 
         .box-item {
           position: relative;
           width: 100px;
           margin-right: -25px;
 
+          &:hover {
+            .box-cap {
+              transform: translateY(12px);
+            }
+          }
+
           span {
             margin-bottom: 30px;
             transform: rotate(-45deg);
           }
 
+          .box-cap {
+            width: 80px;
+            margin-top: 5px;
+            transform: translateY(60px);
+          }
+
           .box {
+            margin-top: 10px;
+
             &.yellow {
               z-index: 100;
             }
@@ -387,5 +402,4 @@ img {
   }
 
 }
-
 </style>
