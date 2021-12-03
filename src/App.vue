@@ -41,22 +41,22 @@
           <div class="box-item">
             <span class="yellow">Вторсырьё</span>
             <img alt="box" class="box-cap" src="@/assets/bucks/buck_top/wastetop_yellow.min.png">
-            <img alt="box" class="box" src="@/assets/bucks/wastebox_yellow.min.png">
+            <img alt="box" class="box yellow" src="@/assets/bucks/wastebox_yellow.min.png">
           </div>
           <div class="box-item">
             <span class="green">Смешанные</span>
             <img alt="box" class="box-cap" src="@/assets/bucks/buck_top/wastetop_green.min.png">
-            <img alt="box" class="box" src="@/assets/bucks/wastebox_green.min.png">
+            <img alt="box" class="box green" src="@/assets/bucks/wastebox_green.min.png">
           </div>
           <div class="box-item">
             <span class="blue">Бытовые</span>
             <img alt="box" class="box-cap" src="@/assets/bucks/buck_top/wastetop_blue.min.png">
-            <img alt="box" class="box" src="@/assets/bucks/wastebox_blue.min.png">
+            <img alt="box" class="box blue" src="@/assets/bucks/wastebox_blue.min.png">
           </div>
           <div class="box-item">
             <span class="orange">Опасные</span>
             <img alt="box" class="box-cap" src="@/assets/bucks/buck_top/wastetop_orange.min.png">
-            <img alt="box" class="box" src="@/assets/bucks/wastebox_orange.min.png">
+            <img alt="box" class="box orange" src="@/assets/bucks/wastebox_orange.min.png">
           </div>
         </div>
       </section>
@@ -122,7 +122,7 @@ img {
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 80%;
+    height: 500px;
     padding: 10px 20px;
     border-radius: 20px;
     overflow: hidden;
@@ -186,7 +186,7 @@ img {
 
         img {
           width: 20px;
-          height: 100%;
+          height: 20px;
         }
 
         span {
@@ -214,15 +214,15 @@ img {
         display: flex;
         flex-direction: column;
         align-items: center;
+        margin: 0 5px;
         width: 120px;
 
         span {
           position: relative;
-          padding: 5px 12px;
           margin-bottom: 10px;
+          padding: 5px 12px;
           color: #fff;
           border-radius: 25px;
-          z-index: auto;
 
           &.yellow {
             background: #f7a600;
@@ -245,11 +245,6 @@ img {
           position: absolute;
           display: none;
           width: 100px;
-        }
-
-        .box {
-          position: relative;
-          z-index: 10;
         }
       }
     }
@@ -290,6 +285,74 @@ img {
 .fade-leave-to {
   transform: scale(0.8);
   opacity: 0;
+}
+
+@media (max-width: 640px) {
+  .container {
+    .game-container {
+      height: 100%;
+      overflow: auto;
+      box-shadow: none;
+
+      .main {
+        display: grid;
+        grid-template-areas:
+                  "A C"
+                  "B B ";
+        justify-content: center;
+
+        .trash {
+          grid-area: B;
+          margin-bottom: 30px;
+        }
+
+        .counter {
+          &.right {
+            grid-area: auto;
+          }
+
+          &.wrong {
+            grid-area: auto;
+          }
+        }
+      }
+
+      .boxes {
+        display: flex;
+        justify-content: center;
+
+        .box-item {
+          position: relative;
+          width: 100px;
+          margin-right: -25px;
+
+          span {
+            margin-bottom: 30px;
+            transform: rotate(-45deg);
+          }
+
+          .box {
+            &.yellow {
+              z-index: 100;
+            }
+
+            &.green {
+              z-index: 90;
+            }
+
+            &.blue {
+              z-index: 80;
+            }
+
+            &.orange {
+              z-index: 70;
+            }
+          }
+        }
+      }
+    }
+  }
+
 }
 
 </style>
