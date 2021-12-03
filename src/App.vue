@@ -1,13 +1,13 @@
 <template>
   <div class="container">
-    <button v-show="false" @click="play" class="btn-play">
+    <button v-show="!game" @click="game = !game" class="btn-play">
       <svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
         <path d="M144.6 960.5V39.6c0-11.8 9.4-22.5 23.7-27.2 14.4-4.7 31-2.4 42.3 5.8l633.2 460.3c15.3 11.1 15.3 31.5 0 42.7l-630.1 458c-7.1 6.5-18 10.8-30.1 10.8-21.5 0-39-13.2-39-29.5z" />
       </svg>
     </button>
 
     <transition name="fade">
-      <section class="game-container">
+      <section v-show="game" class="game-container">
         <img @click="close" alt="close" class="icon-close" src="@/assets/no.png">
         <header class="header">Выбери правильный бак для сортировки мусора!</header>
 
@@ -18,16 +18,16 @@
           </div>
 
           <div class="trash">
-            <span>Начать!</span>
-            <svg class="timer-svg" viewBox="-40 -40 250.79 250.79" xmlns="http://www.w3.org/2000/svg">
-              <g data-name="Layer 2">
-                <g data-name="Layer 1">
-                  <circle class="cls-1 js-preload-circle" cx="85.89" cy="85.89" r="84.89"
-                          style="stroke-dashoffset: 600;" />
-                  <circle class="cls-1" cx="85.89" cy="85.89" r="84.89"
-                          stroke-opacity="0.55" />
-                </g>
-              </g>
+            <span v-if="!counter" @click="startGame">Начать!</span>
+            <svg v-if="!counter" class="timer-svg" id="timer" viewBox="-40 -40 250.79 250.79" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="85.89" cy="85.89" r="84.89" />
+            </svg>
+            <svg v-else class="timer-svg" id="timer2" viewBox="-40 -40 250.79 250.79" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="85.89" cy="85.89" fill="white" r="84.89" stroke="#fff" stroke-linecap="round" stroke-width="10" />
+              <circle cx="85.89" cy="85.89" fill="white" r="84.89" stroke="#cca2e9ff" stroke-dasharray="533.1" stroke-dashoffset="533.1"
+                      stroke-linecap="round" stroke-width="10" transform="rotate(-90 85.89 85.89)">
+                <animate attributeName="stroke-dashoffset" begin="0s" calcMode="linear" dur="60s" repeatCount="1" values="0;-533.1" />
+              </circle>
             </svg>
           </div>
 
@@ -40,23 +40,23 @@
         <div class="boxes">
           <div class="box-item">
             <span class="yellow">Вторсырьё</span>
-            <img alt="box" class="box-cap" src="@/assets/bucks/buck_top/wastetop_yellow.min.png">
             <img alt="box" class="box yellow" src="@/assets/bucks/wastebox_yellow.min.png">
+            <img alt="box" class="box-cap yellow" src="@/assets/bucks/buck_top/wastetop_yellow.min.png">
           </div>
           <div class="box-item">
             <span class="green">Смешанные</span>
-            <img alt="box" class="box-cap" src="@/assets/bucks/buck_top/wastetop_green.min.png">
             <img alt="box" class="box green" src="@/assets/bucks/wastebox_green.min.png">
+            <img alt="box" class="box-cap green" src="@/assets/bucks/buck_top/wastetop_green.min.png">
           </div>
           <div class="box-item">
             <span class="blue">Бытовые</span>
-            <img alt="box" class="box-cap" src="@/assets/bucks/buck_top/wastetop_blue.min.png">
             <img alt="box" class="box blue" src="@/assets/bucks/wastebox_blue.min.png">
+            <img alt="box" class="box-cap blue" src="@/assets/bucks/buck_top/wastetop_blue.min.png">
           </div>
           <div class="box-item">
             <span class="orange">Опасные</span>
-            <img alt="box" class="box-cap" src="@/assets/bucks/buck_top/wastetop_orange.min.png">
             <img alt="box" class="box orange" src="@/assets/bucks/wastebox_orange.min.png">
+            <img alt="box" class="box-cap orange" src="@/assets/bucks/buck_top/wastetop_orange.min.png">
           </div>
         </div>
       </section>
@@ -77,14 +77,11 @@ export default {
     }
   },
   methods: {
-    play() {
-      this.game = !this.game
-    },
     close() {
       this.game = false
     },
     startGame() {
-
+      this.counter = !this.counter
     },
   },
 }
@@ -177,7 +174,7 @@ img {
 
         & .timer-svg {
           max-width: 300px;
-          fill: #aa5ce1;
+          fill: #cca2e9;
         }
       }
 
@@ -220,9 +217,37 @@ img {
         display: flex;
         flex-direction: column;
         align-items: center;
-        margin: 0 5px;
         width: 120px;
+        margin: 0 5px;
         cursor: pointer;
+
+        .box {
+          z-index: 5;
+        }
+
+        &:hover {
+          .box-cap {
+            display: block;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+
+            &.yellow {
+              z-index: 1;
+            }
+
+            &.green {
+              z-index: 2;
+            }
+
+            &.blue {
+              z-index: 3;
+            }
+
+            &.orange {
+              z-index: 4;
+            }
+          }
+        }
 
         span {
           position: relative;
@@ -250,8 +275,9 @@ img {
 
         .box-cap {
           position: absolute;
-          display: none;
-          width: 100px;
+          width: 90px;
+          margin-top: -20px;
+          transform: translateY(60px);
         }
       }
     }
