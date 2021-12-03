@@ -7,14 +7,14 @@
     </button>
 
     <transition name="fade">
-      <section v-show="true" class="game-container">
+      <section class="game-container">
         <img @click="close" alt="close" class="icon-close" src="@/assets/no.png">
         <header class="header">Выбери правильный бак для сортировки мусора!</header>
 
         <div class="main">
-          <div class="counter right">
+          <div v-show="counter" class="counter right">
             <img alt="right" src="@/assets/ok.png">
-            <span>0</span>
+            <span>{{ counterRight }}</span>
           </div>
 
           <div class="trash">
@@ -31,9 +31,9 @@
             </svg>
           </div>
 
-          <div class="counter wrong">
+          <div v-show="counter" class="counter wrong">
             <img alt="wrong" src="@/assets/no.png">
-            <span>0</span>
+            <span>{{ counterWrong }}</span>
           </div>
         </div>
 
@@ -71,6 +71,9 @@ export default {
   data() {
     return {
       game: false,
+      counter: false,
+      counterRight: 0,
+      counterWrong: 0,
     }
   },
   methods: {
@@ -79,6 +82,9 @@ export default {
     },
     close() {
       this.game = false
+    },
+    startGame() {
+
     },
   },
 }
@@ -153,7 +159,7 @@ img {
 
     .main {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
 
       .trash {
         position: relative;
@@ -216,6 +222,7 @@ img {
         align-items: center;
         margin: 0 5px;
         width: 120px;
+        cursor: pointer;
 
         span {
           position: relative;
