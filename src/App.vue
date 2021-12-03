@@ -18,15 +18,21 @@
           </div>
 
           <div class="trash">
-            <span v-if="!counter" @click="startGame">Начать!</span>
+            <button class="btn-start" v-if="!counter" @click="startGame">Начать!</button>
+
+            <div class="trash-items">
+              <div>всякая херня</div>
+            </div>
+
             <svg v-if="!counter" class="timer-svg" id="timer" viewBox="-40 -40 250.79 250.79" xmlns="http://www.w3.org/2000/svg">
               <circle cx="85.89" cy="85.89" r="84.89" />
             </svg>
             <svg v-else class="timer-svg" id="timer2" viewBox="-40 -40 250.79 250.79" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="85.89" cy="85.89" fill="white" r="84.89" stroke="#fff" stroke-linecap="round" stroke-width="10" />
-              <circle cx="85.89" cy="85.89" fill="white" r="84.89" stroke="#cca2e9ff" stroke-dasharray="533.1" stroke-dashoffset="533.1"
-                      stroke-linecap="round" stroke-width="10" transform="rotate(-90 85.89 85.89)">
-                <animate attributeName="stroke-dashoffset" begin="0s" calcMode="linear" dur="60s" repeatCount="1" values="0;-533.1" />
+              <circle cx="85.89" cy="85.89" r="84.89" stroke="#fff" stroke-linecap="round" stroke-width="10" />
+              <circle cx="85.89" cy="85.89" r="84.89" fill="#eeefefff" stroke="#cca2e9ff" stroke-dasharray="533.1" stroke-dashoffset="533.1"
+                      stroke-linecap="round" stroke-width="10" transform="rotate(-90 85.89 85.89)"
+              >
+                <animate attributeName="stroke-dashoffset" begin="0s" calcMode="linear" dur="2s" repeatCount="1" values="0;-533.1" fill="remove" />
               </circle>
             </svg>
           </div>
@@ -61,7 +67,6 @@
         </div>
       </section>
     </transition>
-
   </div>
 </template>
 
@@ -70,8 +75,8 @@ export default {
   name: 'App',
   data() {
     return {
-      game: false,
-      counter: false,
+      game: true,
+      counter: true,
       counterRight: 0,
       counterWrong: 0,
     }
@@ -101,7 +106,6 @@ export default {
 
 button {
   display: flex;
-  background: white;
   border: none;
   outline: none;
   cursor: pointer;
@@ -164,17 +168,22 @@ img {
         justify-content: center;
         align-items: center;
 
-        span {
+        .btn-start, .trash-items {
           position: absolute;
           color: #fff;
+          background: transparent;
           font-size: 42px;
           font-weight: bolder;
           cursor: pointer;
+
+          &:hover {
+            transform: scale(1.1);
+          }
         }
 
         & .timer-svg {
           max-width: 300px;
-          fill: #cca2e9;
+          fill: #aa5ce1;
         }
       }
 
