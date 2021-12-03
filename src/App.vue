@@ -18,10 +18,10 @@
           </div>
 
           <div class="trash">
-            <button class="btn-start" v-if="!counter" @click="startGame">Начать!</button>
+            <button v-if="!counter" @click="startGame" class="btn-start">Начать!</button>
 
             <div class="trash-items">
-              <div>всякая херня</div>
+              {{ }}
             </div>
 
             <svg v-if="!counter" class="timer-svg" id="timer" viewBox="-40 -40 250.79 250.79" xmlns="http://www.w3.org/2000/svg">
@@ -29,10 +29,10 @@
             </svg>
             <svg v-else class="timer-svg" id="timer2" viewBox="-40 -40 250.79 250.79" xmlns="http://www.w3.org/2000/svg">
               <circle cx="85.89" cy="85.89" r="84.89" stroke="#fff" stroke-linecap="round" stroke-width="10" />
-              <circle cx="85.89" cy="85.89" r="84.89" fill="#eeefefff" stroke="#cca2e9ff" stroke-dasharray="533.1" stroke-dashoffset="533.1"
+              <circle cx="85.89" cy="85.89" fill="#eeefefff" r="84.89" stroke="#cca2e9ff" stroke-dasharray="533.1" stroke-dashoffset="533.1"
                       stroke-linecap="round" stroke-width="10" transform="rotate(-90 85.89 85.89)"
               >
-                <animate attributeName="stroke-dashoffset" begin="0s" dur="2s" values="0;-533.1" calcMode="linear"  fill="remove" />
+                <animate attributeName="stroke-dashoffset" begin="0s" calcMode="linear" dur="2s" fill="remove" values="0;-533.1" />
               </circle>
             </svg>
           </div>
@@ -44,25 +44,10 @@
         </div>
 
         <div class="boxes">
-          <div class="box-item">
-            <span class="yellow">Вторсырьё</span>
-            <img alt="box" class="box yellow" src="@/assets/bucks/wastebox_yellow.min.png">
-            <img alt="box" class="box-cap yellow" src="@/assets/bucks/buck_top/wastetop_yellow.min.png">
-          </div>
-          <div class="box-item">
-            <span class="green">Смешанные</span>
-            <img alt="box" class="box green" src="@/assets/bucks/wastebox_green.min.png">
-            <img alt="box" class="box-cap green" src="@/assets/bucks/buck_top/wastetop_green.min.png">
-          </div>
-          <div class="box-item">
-            <span class="blue">Бытовые</span>
-            <img alt="box" class="box blue" src="@/assets/bucks/wastebox_blue.min.png">
-            <img alt="box" class="box-cap blue" src="@/assets/bucks/buck_top/wastetop_blue.min.png">
-          </div>
-          <div class="box-item">
-            <span class="orange">Опасные</span>
-            <img alt="box" class="box orange" src="@/assets/bucks/wastebox_orange.min.png">
-            <img alt="box" class="box-cap orange" src="@/assets/bucks/buck_top/wastetop_orange.min.png">
+          <div v-for="box in boxes" :key="box.id" class="box-item">
+            <span :class="box.color">{{ box.name }}</span>
+            <img :alt="`box ${box.color}`" :class="box.color" :src="require(`./assets/bucks/wastebox_${box.color}.min.png`)" class="box">
+            <img :alt="`box ${box.color}`" :class="box.color" :src="require(`./assets/bucks/buck_top/wastetop_${box.color}.min.png`)" class="box-cap">
           </div>
         </div>
       </section>
@@ -79,6 +64,24 @@ export default {
       counter: true,
       counterRight: 0,
       counterWrong: 0,
+      trash: [
+        { id: 0, name: 'пакет от молока' },
+        { id: 1, name: 'огрызок яблока' },
+        { id: 2, name: 'старый телефон' },
+        { id: 3, name: 'батарейка' },
+        { id: 4, name: 'газеты' },
+        { id: 5, name: 'лампочка' },
+        { id: 6, name: 'стул' },
+        { id: 7, name: 'градусник' },
+        { id: 8, name: 'памперс' },
+        { id: 9, name: 'шприц' },
+      ],
+      boxes: [
+        { id: 0, name: 'Вторсырьё', color: 'yellow' },
+        { id: 1, name: 'Смешанные', color: 'green' },
+        { id: 2, name: 'Бытовые', color: 'blue' },
+        { id: 3, name: 'Опасные', color: 'orange' },
+      ]
     }
   },
   methods: {
@@ -168,12 +171,19 @@ img {
         justify-content: center;
         align-items: center;
 
-        .btn-start, .trash-items {
+        .trash-items {
+          position: absolute;
+          font-size: 24px;
+          font-weight: bolder;
+          background: transparent;
+        }
+
+        .btn-start {
           position: absolute;
           color: #fff;
-          background: transparent;
           font-size: 42px;
           font-weight: bolder;
+          background: transparent;
           cursor: pointer;
 
           &:hover {
@@ -237,8 +247,8 @@ img {
         &:hover {
           .box-cap {
             display: block;
-            transform: translateY(0);
             transition: all 0.3s ease;
+            transform: translateY(0);
 
             &.yellow {
               z-index: 1;
