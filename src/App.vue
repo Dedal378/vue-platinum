@@ -32,7 +32,7 @@
               <circle cx="85.89" cy="85.89" r="84.89" fill="#eeefefff" stroke="#cca2e9ff" stroke-dasharray="533.1" stroke-dashoffset="533.1"
                       stroke-linecap="round" stroke-width="10" transform="rotate(-90 85.89 85.89)"
               >
-                <animate attributeName="stroke-dashoffset" begin="0s" calcMode="linear" dur="2s" repeatCount="1" values="0;-533.1" fill="remove" />
+                <animate attributeName="stroke-dashoffset" begin="0s" dur="2s" values="0;-533.1" calcMode="linear"  fill="remove" />
               </circle>
             </svg>
           </div>
