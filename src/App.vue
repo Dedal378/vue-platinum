@@ -1,50 +1,58 @@
 <template>
   <div class="container">
-    <button v-show="!game" @click="game = !game" class="btn-play">
+    <button v-show="!playGame" @click="playGame = true" class="btn-play">
       <svg viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
         <path d="M144.6 960.5V39.6c0-11.8 9.4-22.5 23.7-27.2 14.4-4.7 31-2.4 42.3 5.8l633.2 460.3c15.3 11.1 15.3 31.5 0 42.7l-630.1 458c-7.1 6.5-18 10.8-30.1 10.8-21.5 0-39-13.2-39-29.5z" />
       </svg>
     </button>
 
     <transition name="fade">
-      <section v-show="game" class="game-container">
-        <img @click="close" alt="close" class="icon-close" src="@/assets/no.png">
-        <header class="header">Выбери правильный бак для сортировки мусора!</header>
+      <section v-show="playGame" class="game-container">
+        <div class="header-container">
+          <img @click="close" alt="close window" class="icon-close" src="@/assets/no.png">
+          <header class="header">{{ title }}</header>
+        </div>
 
         <div class="main">
-          <div v-show="counter" class="counter right">
-            <img alt="right" src="@/assets/ok.png">
-            <span>{{ counterRight }}</span>
-          </div>
-
-          <div class="trash">
-            <button v-if="!counter" @click="startGame" class="btn-start">Начать!</button>
-
-            <div class="trash-items">
-              {{ }}
-            </div>
-
-            <svg v-if="!counter" class="timer-svg" id="timer" viewBox="-40 -40 250.79 250.79" xmlns="http://www.w3.org/2000/svg">
+          <div v-if="!isPlaying" class="trash">
+            <button @click="startGame" class="btn-start">Начать!</button>
+            <svg class="timer-svg" id="timer" viewBox="-40 -40 250.79 250.79" xmlns="http://www.w3.org/2000/svg">
               <circle cx="85.89" cy="85.89" r="84.89" />
             </svg>
-            <svg v-else class="timer-svg" id="timer2" viewBox="-40 -40 250.79 250.79" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="85.89" cy="85.89" r="84.89" stroke="#fff" stroke-linecap="round" stroke-width="10" />
-              <circle cx="85.89" cy="85.89" fill="#eeefefff" r="84.89" stroke="#cca2e9ff" stroke-dasharray="533.1" stroke-dashoffset="533.1"
-                      stroke-linecap="round" stroke-width="10" transform="rotate(-90 85.89 85.89)"
-              >
-                <animate attributeName="stroke-dashoffset" begin="0s" calcMode="linear" dur="2s" fill="remove" values="0;-533.1" />
-              </circle>
-            </svg>
           </div>
 
-          <div v-show="counter" class="counter wrong">
-            <img alt="wrong" src="@/assets/no.png">
-            <span>{{ counterWrong }}</span>
+          <div v-else class="trash ">
+            <div class="counter right">
+              <img alt="right" src="@/assets/ok.png">
+              <span>{{ counterRight }}</span>
+            </div>
+
+            <div v-if="!isEndGame" class="trash">
+              <div class="trash-items">{{ trash }}</div>
+              <svg class="timer-svg" id="timer2" viewBox="-40 -40 250.79 250.79" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="85.89" cy="85.89" r="84.89" stroke="#fff" stroke-linecap="round" stroke-width="10" />
+                <circle cx="85.89" cy="85.89" fill="#eeefefff" r="84.89" stroke="#cca2e9ff" stroke-dasharray="533.1" stroke-dashoffset="533.1"
+                        stroke-linecap="round" stroke-width="10" transform="rotate(-90 85.89 85.89)"
+                >
+                  <animate :dur="`${duration}s`" attributeName="stroke-dashoffset" begin="0s" calcMode="linear" fill="remove" values="0;-533.1" />
+                </circle>
+              </svg>
+            </div>
+
+            <div v-else @click="restartGame" class="restart">
+              <img alt="restart" src="@/assets/reload.png">
+              <span>Еще раз</span>
+            </div>
+
+            <div class="counter wrong">
+              <img alt="wrong" src="@/assets/no.png">
+              <span>{{ counterWrong }}</span>
+            </div>
           </div>
         </div>
 
         <div class="boxes">
-          <div v-for="box in boxes" :key="box.id" class="box-item">
+          <div v-for="box in boxes" :key="box.id" @click="cleanTrash(box.id)" class="box-item">
             <span :class="box.color">{{ box.name }}</span>
             <img :alt="`box ${box.color}`" :class="box.color" :src="require(`./assets/bucks/wastebox_${box.color}.min.png`)" class="box">
             <img :alt="`box ${box.color}`" :class="box.color" :src="require(`./assets/bucks/buck_top/wastetop_${box.color}.min.png`)" class="box-cap">
@@ -60,21 +68,24 @@ export default {
   name: 'App',
   data() {
     return {
-      game: true,
-      counter: true,
+      playGame: true,
+      isPlaying: false,
+      isEndGame: false,
       counterRight: 0,
       counterWrong: 0,
-      trash: [
-        { id: 0, name: 'пакет от молока' },
-        { id: 1, name: 'огрызок яблока' },
-        { id: 2, name: 'старый телефон' },
-        { id: 3, name: 'батарейка' },
-        { id: 4, name: 'газеты' },
-        { id: 5, name: 'лампочка' },
-        { id: 6, name: 'стул' },
-        { id: 7, name: 'градусник' },
-        { id: 8, name: 'памперс' },
-        { id: 9, name: 'шприц' },
+      duration: 5,
+      idx: 0,
+      pileOfTrash: [
+        { id: 0, name: 'пакет от молока', box: 0, },
+        { id: 1, name: 'огрызок яблока', box: 2, },
+        { id: 2, name: 'старый телефон', box: 1, },
+        { id: 3, name: 'батарейка', box: 3, },
+        { id: 4, name: 'газеты', box: 0, },
+        { id: 5, name: 'лампочка', box: 1, },
+        { id: 6, name: 'стул', box: 2, },
+        { id: 7, name: 'градусник', box: 3, },
+        { id: 8, name: 'памперс', box: 2, },
+        { id: 9, name: 'шприц', box: 3, },
       ],
       boxes: [
         { id: 0, name: 'Вторсырьё', color: 'yellow' },
@@ -86,10 +97,44 @@ export default {
   },
   methods: {
     close() {
-      this.game = false
+      this.playGame = false
     },
     startGame() {
-      this.counter = !this.counter
+      this.isPlaying = !this.isPlaying
+    },
+    cleanTrash(box) {
+      if (this.isPlaying && this.idx < (this.pileOfTrash.length - 1)) {
+        if (this.pileOfTrash[this.idx].box === box) {
+          ++this.counterRight
+        } else {
+          ++this.counterWrong
+        }
+        this.idx += 1
+        console.log('idx', this.idx, 'id', (this.pileOfTrash[this.idx].id))
+      }
+
+      if (this.idx === (this.pileOfTrash.length - 1)) {
+        this.isEndGame = true
+      }
+    },
+    restartGame() {
+      this.idx = 0
+      this.counterRight = 0
+      this.counterWrong = 0
+      this.isEndGame = false
+      this.isPlaying = false
+    },
+  },
+  computed: {
+    trash() {
+      return this.pileOfTrash[this.idx].name
+    },
+    title() {
+      return (
+        this.isEndGame
+          ? `Отлично! Ты набрал ${ this.counterRight } очков из ${ this.pileOfTrash.length }!`
+          : 'Выбери правильный бак для сортировки мусора!'
+      )
     },
   },
 }
@@ -132,12 +177,13 @@ img {
     position: relative;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    align-self: center;
     height: 500px;
     padding: 10px 20px;
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
-    place-self: center;
 
     .icon-close {
       position: absolute;
@@ -153,17 +199,24 @@ img {
       }
     }
 
-    .header {
-      max-width: 60%;
-      padding: 10px;
-      font-size: 20px;
-      font-weight: bolder;
-      place-self: center;
+    .header-container {
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+
+      .header {
+        max-width: 60%;
+        padding: 10px;
+        font-size: 20px;
+        font-weight: bolder;
+        place-self: center;
+      }
     }
 
     .main {
       display: flex;
       justify-content: center;
+      min-height: 300px;
 
       .trash {
         position: relative;
@@ -224,6 +277,28 @@ img {
         &.wrong {
           background: #e3218b;
         }
+      }
+    }
+
+    .restart {
+      display: flex;
+      justify-content: space-between;
+      align-self: center;
+      width: 130px;
+      margin: 0 auto;
+      padding: 5px 15px;
+      background: #aa5ce1;
+      border-radius: 25px;
+
+      & span {
+        color: #fff;
+        font-size: 24px;
+        font-weight: bolder;
+      }
+
+      img {
+        align-self: center;
+        width: 20px;
       }
     }
 
