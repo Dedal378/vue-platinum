@@ -73,7 +73,7 @@ export default {
       isEndGame: false,
       counterRight: 0,
       counterWrong: 0,
-      duration: 5,
+      duration: 60,
       idx: 0,
       pileOfTrash: [
         { id: 0, name: 'пакет от молока', box: 0, },
@@ -101,6 +101,7 @@ export default {
     },
     startGame() {
       this.isPlaying = !this.isPlaying
+      this.timer()
     },
     cleanTrash(box) {
       if (this.isPlaying && this.idx < (this.pileOfTrash.length - 1)) {
@@ -123,6 +124,15 @@ export default {
       this.counterWrong = 0
       this.isEndGame = false
       this.isPlaying = false
+    },
+    timer() {
+      const timeout = this.duration * 1000
+
+      console.log(timeout)
+
+      setTimeout(() => {
+        this.isEndGame = true
+      }, timeout)
     },
   },
   computed: {
