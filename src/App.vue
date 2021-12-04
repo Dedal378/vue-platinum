@@ -127,12 +127,7 @@ export default {
     },
     timer() {
       const timeout = this.duration * 1000
-
-      console.log(timeout)
-
-      setTimeout(() => {
-        this.isEndGame = true
-      }, timeout)
+      setTimeout(() => this.isEndGame = true, timeout)
     },
   },
   computed: {
