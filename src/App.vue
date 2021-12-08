@@ -28,7 +28,11 @@
             </div>
 
             <div v-if="!isEndGame" class="trash">
-              <div class="trash-items">{{ trash }}</div>
+              <div class="trash-items">
+                <div v-show="text" class="text">{{ trash }}</div>
+                <img v-show="isRight" class="img right" src="@/assets/ok.png" alt="right">
+                <img v-show="isWrong" class="img wrong" src="@/assets/no.png" alt="wrong">
+              </div>
               <svg class="timer-svg" id="timer2" viewBox="-40 -40 250.79 250.79" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="85.89" cy="85.89" r="84.89" stroke="#fff" stroke-linecap="round" stroke-width="10" />
                 <circle cx="85.89" cy="85.89" fill="#eeefefff" r="84.89" stroke="#cca2e9ff" stroke-dasharray="533.1" stroke-dashoffset="533.1"
@@ -68,9 +72,12 @@ export default {
   name: 'App',
   data() {
     return {
-      playGame: true,
+      playGame: false,
       isPlaying: false,
       isEndGame: false,
+      isRight: false,
+      isWrong: false,
+      text: true,
       counterRight: 0,
       counterWrong: 0,
       duration: 60,
@@ -106,12 +113,24 @@ export default {
     cleanTrash(box) {
       if (this.isPlaying && this.idx < (this.pileOfTrash.length - 1)) {
         if (this.pileOfTrash[this.idx].box === box) {
+          this.text = false
+          this.isRight = true
+          setTimeout(() => {
+            this.text = true
+            this.isRight = false
+          }, 1000)
           ++this.counterRight
         } else {
+          this.text = false
+          this.isWrong = true
+          setTimeout(() => {
+            this.text = true
+            this.isWrong = false
+          }, 1000)
           ++this.counterWrong
         }
+
         this.idx += 1
-        console.log('idx', this.idx, 'id', (this.pileOfTrash[this.idx].id))
       }
 
       if (this.idx === (this.pileOfTrash.length - 1)) {
@@ -231,9 +250,34 @@ img {
 
         .trash-items {
           position: absolute;
-          font-size: 24px;
-          font-weight: bolder;
-          background: transparent;
+          display: flex;
+          align-content: center;
+          justify-content: center;
+
+          & .text {
+            font-size: 24px;
+            font-weight: bolder;
+            background: transparent;
+          }
+
+          & .img {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            padding: 10px;
+            display: flex;
+            border-radius: 50%;
+
+            &.right {
+              align-self: center;
+              background: #00cd71;
+            }
+
+            &.wrong {
+              align-self: center;
+              background: #f65a58;
+            }
+          }
         }
 
         .btn-start {
