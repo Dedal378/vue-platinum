@@ -118,7 +118,7 @@ export default {
           setTimeout(() => {
             this.text = true
             this.isRight = false
-          }, 1000)
+          }, 500)
           ++this.counterRight
         } else {
           this.text = false
@@ -126,7 +126,7 @@ export default {
           setTimeout(() => {
             this.text = true
             this.isWrong = false
-          }, 1000)
+          }, 500)
           ++this.counterWrong
         }
 
